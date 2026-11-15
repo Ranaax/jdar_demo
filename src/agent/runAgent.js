@@ -37,7 +37,7 @@ export async function runAgent({ prompt, lang, history, getState, setState, onSt
   } else if (!forceLocal) {
     const messages = [...history, { role: 'user', content: prompt }]
     try {
-      for (let i = 0; i < 14; i++) {
+      for (let i = 0; i < 24; i++) {
         const r = await post({ messages, lang, today: today() })
         if (r.status === 503 || r.status === 404) break
         const data = await r.json()
