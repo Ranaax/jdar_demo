@@ -1,0 +1,84 @@
+/* ==========================================================================
+   jdar · v5 "Cofounder layer" tokens.
+   Identity = jdar.sa/brand (colours below + ITF Fatimah). Everything else here is
+   tints/alpha of those colours. The Cofounder craft (layered surfaces, raised
+   buttons, glass, rings) is ported with DEEP-GREEN-tinted shadows, never black.
+   ========================================================================== */
+@font-face{font-family:Fatimah;src:url("fonts/itfFatimahArabic-300.otf") format("opentype");font-weight:300;font-display:swap}
+@font-face{font-family:Fatimah;src:url("fonts/itfFatimahArabic-400.otf") format("opentype");font-weight:400;font-display:swap}
+@font-face{font-family:Fatimah;src:url("fonts/itfFatimahArabic-500.otf") format("opentype");font-weight:500;font-display:swap}
+@font-face{font-family:Fatimah;src:url("fonts/itfFatimahArabic-700.otf") format("opentype");font-weight:700;font-display:swap}
+@font-face{font-family:Fatimah;src:url("fonts/itfFatimahArabic-900.otf") format("opentype");font-weight:900;font-display:swap}
+@font-face{font-family:"Style Script";src:url("fonts/StyleScript-Regular.woff2") format("woff2");font-weight:400;font-style:normal;font-display:swap}
+
+:root{
+  /* ---- brand table (jdar.sa/brand) — the only hues ---- */
+  --cream:#FDF7F4;  --surface:#FAF9F5; --white:#FFFFFF;
+  --deep:#0E4B3B;   --sage:#7D9E77;    --sage-dark:#6B8D65;
+  --warmgray:#8A8578; --warmborder:#EDE6DF; --peach:#F3E2D8; --sage-tint:#F1F4EE;
+  /* darker shades of --peach: awaiting-approval dot/ring and its text */
+  --peach-deep:#D9A88A; --peach-ink:#8C5A3C;
+  /* green illustration ramp (DESIGN.md) */
+  --g0:#F0EEE8; --g1:#E1E3D8; --g2:#CCD5C4; --g3:#B3C3AC; --g4:#90AB8A; --g5:#5C8565; --g6:#3A6C53;
+  /* primary-button face: the midpoint of --g5/--g6 (same ramp), white text 5.0:1 = AA at any size (sage itself is 2.99:1) */
+  --sage-btn:#4B795C;
+
+  /* ---- surfaces (Cofounder: page / raised / darker / frame) ---- */
+  --page:var(--cream);
+  --raised:#FFFCFA;                 /* white warmed toward cream */
+  --frame:#F7F1EC;                  /* app-frame fill: cream pressed a step darker */
+  --darker:var(--warmborder);
+  --mock:#FBF8F5;                   /* inner mock-UI panels */
+
+  /* ---- ink: deep at opacities (Cofounder uses one warm ink at 90/80/70/50) ---- */
+  --ink:var(--deep);
+  --ink-90:rgba(14,75,59,.90);
+  --ink-80:rgba(14,75,59,.80);
+  --ink-70:rgba(14,75,59,.75);        /* .75 = AA 4.5:1 on cream, --frame, --raised and --g0 wells */
+  --ink-50:rgba(14,75,59,.52);
+  --ink-30:rgba(14,75,59,.30);
+  --hair:rgba(14,75,59,.10);        /* hairlines */
+  --hair-2:rgba(14,75,59,.16);
+  --dash:rgba(125,158,119,.55);     /* dashed connectors */
+  --on-dark:rgba(253,247,244,.92);
+  --on-dark-2:rgba(253,247,244,.68);
+
+  /* ---- type: Fatimah only (Arabic); Latin UI text in EN uses a neutral system face ---- */
+  --fatimah:Fatimah, "Segoe UI", system-ui, -apple-system, "Helvetica Neue", Tahoma, Arial, sans-serif;
+  --latin:"Segoe UI", system-ui, -apple-system, "Helvetica Neue", Arial, sans-serif;
+  --studio:"Style Script", "Segoe UI", cursive;
+  --font:var(--fatimah);
+  --fs-h1:clamp(2rem, 1.35rem + 1.6vw, 2.75rem);      /* ≈44px @1440 — small, confident */
+  --fs-h2:clamp(1.75rem, 1.3rem + 1.1vw, 2.375rem);   /* ≈38 */
+  --fs-h3:clamp(1.5rem, 1.2rem + .8vw, 2rem);         /* ≈32 */
+  --fs-lead:clamp(1.0625rem, 1rem + .2vw, 1.1875rem);
+  --fs-body:1.0625rem;                                 /* 17 — Arabic needs a step more than Latin 15 */
+  --fs-small:.9375rem;
+  --fs-eyebrow:.875rem;
+  --fs-ui:.8125rem;                                    /* 13 — mock-UI text */
+  --fs-ui-xs:.6875rem;                                 /* 11 — tiny mock-UI metadata */
+  --w-head:500;                                        /* Cofounder heads are 400; Fatimah 500 reads the same */
+
+  /* ---- layout ---- */
+  --wrap:1100px; --wrap-wide:1240px; --gut:24px; --nav-h:76px;
+  --sec-y:clamp(88px, 8.3vw, 120px);
+  --r-xs:4px; --r-btn:8px; --r-row:10px; --r-card:12px; --r-frame:16px; --r-tray:20px; --r-pill:999px;
+
+  /* ---- shadows: Cofounder recipes, tinted deep green ---- */
+  --sh-btn-light:0 2px 3px rgba(14,75,59,.07), inset 0 0 .357px 1.5px rgba(255,255,255,.35), inset 0 2px 0 #fff;
+  --sh-btn-sage:0 0 0 1px rgba(14,75,59,.14), inset 0 2px 0 rgba(255,255,255,.26), inset 0 -.5px 2px rgba(14,75,59,.30), 0 2px 8px rgba(14,75,59,.05), 0 3px 4px rgba(14,75,59,.16);
+  --sh-btn-deep:0 0 0 1px rgba(14,75,59,.30), inset 0 2px 0 rgba(255,255,255,.18), inset 0 -.5px 2px rgba(0,20,14,.35), 0 2px 8px rgba(14,75,59,.06), 0 3px 4px rgba(14,75,59,.22);
+  --sh-frame:inset 0 0 .357px 1.5px rgba(255,255,255,.35), inset 0 2px 0 #fff, 0 0 2px rgba(14,75,59,.22), 0 0 0 4px rgba(237,230,223,.55);
+  --sh-float:inset 0 0 0 1px #fff, 0 0 0 1px rgba(14,75,59,.08), 0 0 20px rgba(14,75,59,.03), 0 36px 28px rgba(14,75,59,.02), 0 4px 10px rgba(14,75,59,.08), 0 5px 15px rgba(14,75,59,.02);
+  --sh-recess:inset 0 0 0 1px #fff, inset 1px 1px 4px rgba(14,75,59,.12), inset -2px -2px 3px rgba(255,255,255,.7);
+  --sh-glass:inset 0 -1px 0 rgba(0,20,14,.12), inset 0 -1px 2px rgba(0,20,14,.10), inset 0 1px 1px rgba(255,255,255,.24);
+  --sh-card:inset 0 2px 1px #fff, inset 0 0 0 .931px #fff, 0 0 0 .931px rgba(14,75,59,.08), 0 4px 8px rgba(14,75,59,.03), 0 9px 8px rgba(14,75,59,.02);
+
+  /* ---- motion ---- */
+  --ease-out:cubic-bezier(.23,1,.32,1);
+  --ease-glide:cubic-bezier(.22,1,.36,1);
+  --ease-spring:cubic-bezier(.34,1.56,.64,1);
+  --ease-draw:cubic-bezier(.45,.05,.25,1);
+}
+html[lang="en"]{--font:var(--latin)}
+@media (max-width:767px){ :root{ --gut:20px; --nav-h:64px; --sec-y:72px; } }
