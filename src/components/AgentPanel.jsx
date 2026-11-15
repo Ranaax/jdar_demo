@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { Icon, bidi } from './ui.jsx'
 
-export default function AgentPanel({ open, onClose, chat, busy, mode, lang, t, ask, view }) {
+export default function AgentPanel({ open, onClose, chat, busy, mode, model, lang, t, ask, view }) {
   const [q, setQ] = useState('')
   const end = useRef(null)
   useEffect(() => { end.current?.scrollIntoView({ block: 'end', behavior: 'smooth' }) }, [chat])
@@ -14,7 +14,7 @@ export default function AgentPanel({ open, onClose, chat, busy, mode, lang, t, a
           <span className="agent-mark"><img src="/brand/jdar-mark-cream.svg" alt="" width="20" height="16" /></span>
           <div>
             <div className="ui-strong">{t.agent}</div>
-            <div className="ui-xs">{mode ? (mode === 'llm' ? t.llm : t.local) : t.agentSub}</div>
+            <div className="ui-xs">{mode ? (mode === 'llm' ? <>{t.llm}{model && <span className="n"> · {model}</span>}</> : t.local) : t.agentSub}</div>
           </div>
         </div>
         <button className="icon-btn agent-close" onClick={onClose} aria-label={t.close}><Icon name="x" /></button>

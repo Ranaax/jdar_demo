@@ -45,7 +45,7 @@ export async function runAgent({ prompt, lang, history, getState, setState, onSt
         messages.push({ role: 'assistant', content: data.content })
         const calls = data.content.filter((b) => b.type === 'tool_use')
         if (data.stop_reason !== 'tool_use' || !calls.length) {
-          return { mode: 'llm', messages, text: data.content.filter((b) => b.type === 'text').map((b) => b.text).join('\n').trim() }
+          return { mode: 'llm', model: data.model, messages, text: data.content.filter((b) => b.type === 'text').map((b) => b.text).join('\n').trim() }
         }
         messages.push({ role: 'user', content: calls.map((c) => ({ type: 'tool_result', tool_use_id: c.id, content: JSON.stringify(exec(c.name, c.input)) })) })
       }

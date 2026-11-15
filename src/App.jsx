@@ -25,6 +25,7 @@ export default function App() {
   const [history, setHistory] = useState([])
   const [busy, setBusy] = useState(false)
   const [mode, setMode] = useState(null)
+  const [model, setModel] = useState(null)
   const [panel, setPanel] = useState(false)
   const t = T[lang]
 
@@ -49,7 +50,7 @@ export default function App() {
     }
     try {
       const r = await runAgent({ prompt, lang, history, getState: () => ref.current, setState, onStep, onText: (text) => patch((m) => ({ ...m, text })) })
-      setHistory(r.messages); setMode(r.mode)
+      setHistory(r.messages); setMode(r.mode); setModel(r.model || null)
       patch((m) => ({ ...m, text: r.text, mode: r.mode }))
     } finally { setBusy(false) }
   }
@@ -106,7 +107,7 @@ export default function App() {
 
       {panel && <button className="scrim" aria-label={t.close} onClick={() => setPanel(false)} />}
       <div className="toasts" role="status" aria-live="polite">{toast && <div key={toast.id} className="toast"><Icon name="check" size={16} />{bidi(toast.text[lang])}</div>}</div>
-      <AgentPanel open={panel} onClose={() => setPanel(false)} {...{ chat, busy, mode, lang, t, ask, view }} />
+      <AgentPanel open={panel} onClose={() => setPanel(false)} {...{ chat, busy, mode, model, lang, t, ask, view }} />
     </div>
   )
 }

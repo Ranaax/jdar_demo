@@ -63,7 +63,7 @@ async function gemini(body) {
     for (let attempt = 0; attempt < 2 && Date.now() - started < 40000; attempt++) {
       let r, data = {}
       try {
-        r = await fetch(`${base}/v1beta/models/${model}:generateContent`, { method: 'POST', signal: AbortSignal.timeout(25000), headers: { 'content-type': 'application/json', 'x-goog-api-key': GEMINI_KEY }, body: JSON.stringify(body) })
+        r = await fetch(`${base}/v1beta/models/${model}:generateContent`, { method: 'POST', signal: AbortSignal.timeout(14000), headers: { 'content-type': 'application/json', 'x-goog-api-key': GEMINI_KEY }, body: JSON.stringify(body) })
         data = await r.json().catch(() => ({}))
       } catch (e) { tried.push(`${model}: ${e.name === 'TimeoutError' ? 'timed out' : e.message}`); break }
       if (r.ok) { geminiModel = model; return data }
@@ -131,11 +131,11 @@ export default async function handler(req, res) {
     if (!history.length) return send(res, 400, { error: 'empty conversation' })
     if (PROVIDER === 'gemini') {
       const data = await gemini({ system_instruction: { parts: [{ text: system }] }, tools: geminiTools, contents: toGemini(history), generationConfig: { maxOutputTokens: 4096 } })
-      return send(res, 200, fromGemini(data))
+      return send(res, 200, { ...fromGemini(data), model: geminiModel })
     }
     const clean = history.map((m) => (typeof m.content === 'string' ? m : { ...m, content: m.content.map(({ _p, ...b }) => b) }))
     const data = await anthropic({ system, tools: TOOLS, messages: clean })
-    return send(res, 200, { content: data.content, stop_reason: data.stop_reason })
+    return send(res, 200, { content: data.content, stop_reason: data.stop_reason, model: data.model })
   } catch (e) {
     return send(res, e.message === 'too_large' ? 413 : 502, { error: String(e.message || e) })
   }
