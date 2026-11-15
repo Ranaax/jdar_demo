@@ -54,6 +54,7 @@ export default function AgentPanel({ open, onClose, chat, busy, mode, lang, t, a
       </div>
 
       <div className="agent-foot">
+        <div className="ui-xs chips-label">{t.suggestions}</div>
         <div className="chips">
           {t.prompts[view].map((p) => <button key={p} className="ui-chip" disabled={busy} onClick={() => ask(p)}>{p}</button>)}
         </div>

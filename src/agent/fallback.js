@@ -11,15 +11,23 @@ const INTENTS = {
   daily: /يومي|كامل|كل المهام|daily|everything|full/i,
   collections: /متأخر|تحصيل|تذكير|فاتور|overdue|collect|remind|invoice/i,
   newTicket: /(أضف|اضف|سجّل|سجل|أنشئ|انشئ|افتح)\s+بلاغ|بلاغ جديد|(add|log|create|open)\s+(a\s+)?(new\s+)?(maintenance\s+)?(ticket|request)/i,
+  closeTicket: /(أغلق|اغلق|أنجز|close|complete).*M-\d+/i,
+  terminate: /((أنهِ|أنه|انه|إنهاء|انهاء).*C-\d+)|((terminate|end)\b.*C-\d+.*early)|(early.*C-\d+)/i,
   payment: /سجّل دفعة|سجل دفعة|record.*payment|payment for/i,
   renewals: /تجديد|ينتهي|تنتهي|عقود|renew|expir|end soon|contract/i,
   maintenance: /صيان|بلاغ|عاجل|maint|ticket|triage|urgent|repair|vendor/i,
   leasing: /عميل|عملاء|تأجير|معاين|وحد|lead|leasing|viewing|unit|prospect/i,
 }
 
-async function collections(lang, exec) {
+const ASKS = /^\s*(ما|كم|هل|اعرض|what|which|how|show|list)(\s|$)/i
+
+async function collections(lang, exec, prompt = '') {
   const overdue = exec('list_invoices', { status: 'overdue' })
   await sleep(300)
+  if (ASKS.test(prompt) && !/جهّز|جهز|ذكّر|draft|remind|chase/i.test(prompt)) {
+    const sum = overdue.reduce((a, i) => a + i.total_sar, 0)
+    return (lang === 'ar' ? `إجمالي المتأخرات ${sar(sum)} (عدد الفواتير: ${overdue.length}):` : `Total overdue ${sar(sum)} (invoices: ${overdue.length}):`) + '\n' + overdue.map((i) => `${i.id} · ${i.tenant} · ${sar(i.total_sar)} · ${i.days_overdue}${lang === 'ar' ? ' يوماً' : 'd'}`).join('\n')
+  }
   const out = []
   for (const i of overdue) {
     const firm = i.reminders_sent >= 1
@@ -50,6 +58,21 @@ async function newTicket(prompt, lang, exec, getState) {
   return (lang === 'ar' ? `سُجّل البلاغ ${r.ticket_id} للوحدة ${r.unit}.` : `Logged ${r.ticket_id} for unit ${r.unit}.`) + '\n\n' + rest
 }
 
+async function closeTicket(prompt, lang, exec) {
+  const r = exec('complete_ticket', { ticket_id: prompt.match(/M-\d+/i)[0].toUpperCase() })
+  if (r.error) return `⚠ ${r.error}`
+  return lang === 'ar' ? `أُغلق البلاغ ${r.ticket_id}، وقُيّدت تكلفته ${sar(r.cost_sar)} في الدفتر: مدين مصروف الصيانة / دائن البنك.` : `Closed ${r.ticket_id} and posted its cost of ${sar(r.cost_sar)}: Dr Maintenance expense / Cr Bank.`
+}
+
+async function terminate(prompt, lang, exec) {
+  const days = Number((prompt.match(/(\d+)\s*(يوم|day)/i) || [])[1]) || 30
+  const r = exec('propose_early_termination', { contract_id: prompt.match(/C-\d+/i)[0].toUpperCase(), termination_date: d(days), reason: lang === 'ar' ? 'بطلب من الإدارة' : 'Requested by management' })
+  if (r.error) return `⚠ ${r.error}`
+  return lang === 'ar'
+    ? `جهّزت طلب الإنهاء المبكر وهو بانتظار اعتمادك.\nالمستحق قبل الإخلاء: ${sar(r.due_before_moveout_sar)}. فواتير لاحقة تُلغى: ${r.invoices_to_cancel}.`
+    : `Early termination prepared and awaiting your approval.\nDue before move-out: ${sar(r.due_before_moveout_sar)}. Later invoices cancelled: ${r.invoices_to_cancel}.`
+}
+
 async function payment(prompt, lang, exec) {
   const idm = prompt.match(/INV-\d+/i)
   if (!idm) return lang === 'ar' ? 'حدّد رقم الفاتورة، مثل INV-2205.' : 'Please give the invoice number, e.g. INV-2205.'
@@ -64,7 +87,9 @@ async function renewals(prompt, lang, exec, getState) {
   const list = exec('list_contracts', { expiring_within_days: 90 })
   await sleep(300)
   if (!/اقترح|جهّز|propose|draft|renew/i.test(prompt) && !INTENTS.daily.test(prompt)) {
-    return list.map((c) => `${c.id} · ${c.tenant} · ${c.unit} · ${c.days_to_end}${lang === 'ar' ? ' يوماً' : 'd'}`).join('\n') || '—'
+    const soon = exec('list_contracts', {}).filter((c) => c.days_to_end <= 90 && c.status !== 'terminated').sort((a, b) => a.days_to_end - b.days_to_end)
+    if (!soon.length) return lang === 'ar' ? 'لا توجد عقود تنتهي خلال 90 يوماً.' : 'No contracts end within 90 days.'
+    return (lang === 'ar' ? `عقود تنتهي خلال 90 يوماً (${soon.length}):` : `Contracts ending within 90 days (${soon.length}):`) + '\n' + soon.map((c) => `${c.id} · ${c.tenant} · ${c.unit} · ${c.days_to_end}${lang === 'ar' ? ' يوماً' : 'd'}${c.status === 'renewal_pending' ? (lang === 'ar' ? ' · تجديد بانتظار الاعتماد' : ' · renewal awaiting approval') : ''}`).join('\n')
   }
   const out = []
   for (const c of list.filter((x) => x.status === 'active')) {
@@ -129,6 +154,10 @@ async function leasing(prompt, lang, exec, getState) {
     if (m.error) return `⚠ ${m.error}`
     return m.map((u) => `${u.unit} · ${u.bedrooms || '-'} · ${u.area_m2} m² · ${sar(u.annual_rent_sar)}`).join('\n') || '—'
   }
+  if (ASKS.test(prompt) && /شاغر|vacant/i.test(prompt)) {
+    const v = getState().units.filter((u) => u.status === 'vacant')
+    return (lang === 'ar' ? `الوحدات الشاغرة (${v.length})، بآخر إيجار مسجّل:` : `Vacant units (${v.length}), at the last registered rent:`) + '\n' + v.map((u) => `${u.code} · ${find.prop(getState(), u.propertyId).name[lang]} · ${u.area} m² · ${sar(u.rent)}`).join('\n')
+  }
   const leads = exec('list_leads', { status: 'new' })
   await sleep(300)
   const out = []
@@ -165,12 +194,14 @@ export async function localAgent(prompt, lang, exec, getState) {
   LANG = lang
   await sleep(400)
   if (has(prompt, INTENTS.daily)) {
-    const parts = [await collections(lang, exec), await renewals(prompt, lang, exec, getState), await maintenance('triage', lang, exec, getState), await leasing('', lang, exec, getState)]
+    const parts = [await collections(lang, exec, ''), await renewals(prompt, lang, exec, getState), await maintenance('triage', lang, exec, getState), await leasing('', lang, exec, getState)]
     return parts.join('\n\n')
   }
   if (has(prompt, INTENTS.newTicket)) return newTicket(prompt, lang, exec, getState)
+  if (has(prompt, INTENTS.closeTicket)) return closeTicket(prompt, lang, exec)
+  if (has(prompt, INTENTS.terminate)) return terminate(prompt, lang, exec)
   if (has(prompt, INTENTS.payment)) return payment(prompt, lang, exec)
-  if (has(prompt, INTENTS.collections)) return collections(lang, exec)
+  if (has(prompt, INTENTS.collections)) return collections(lang, exec, prompt)
   if (has(prompt, INTENTS.maintenance)) return maintenance(prompt, lang, exec, getState)
   if (has(prompt, INTENTS.leasing)) return leasing(prompt, lang, exec, getState)
   if (has(prompt, INTENTS.renewals)) return renewals(prompt, lang, exec, getState)

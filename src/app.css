@@ -252,3 +252,25 @@ html[lang="ar"] body{font-size:1.0625rem}
 html[lang="ar"] .shell{--fs-ui:1rem;--fs-ui-xs:.875rem}
 html[lang="ar"] .navi,html[lang="ar"] .btn{font-size:1rem}
 html[lang="ar"] .btn-sm{font-size:.9375rem}
+
+/* ---- v5: header never wraps its controls; daily-run card; wrapping suggestions ---- */
+.top{display:grid;grid-template-columns:auto minmax(0,1fr) auto;grid-template-areas:"logo nav end";gap:0 20px;padding-top:0}
+.top .logo{grid-area:logo}
+.top .nav{grid-area:nav;margin:0;min-width:0;justify-content:safe center;overflow-x:auto;scrollbar-width:none;order:0;width:auto;padding:0}
+.top .top-end{grid-area:end;margin:0}
+@media (max-width:1279px){
+  .top{grid-template-columns:minmax(0,1fr) auto;grid-template-areas:"logo end" "nav nav";padding-top:10px}
+  .top .nav{justify-content:flex-start;padding:6px 0 8px}
+}
+.daily{display:flex;align-items:center;gap:24px;padding:20px 24px;background:var(--sage-tint)}
+.daily-body{flex:1;min-width:0}
+.daily .sh{margin-bottom:4px}
+.daily-steps{list-style:none;margin:12px 0 0;padding:0;display:flex;flex-wrap:wrap;gap:8px 20px;font-size:var(--fs-ui);color:var(--ink-80)}
+.daily-steps li{display:flex;align-items:center;gap:8px}
+.daily-steps .n{display:grid;place-items:center;inline-size:22px;block-size:22px;border-radius:50%;background:var(--raised);box-shadow:0 0 0 1px var(--hair-2);font-size:12px;font-weight:700;color:var(--g6)}
+.chips{flex-wrap:wrap;overflow:visible}
+.chips-label{margin-bottom:-4px}
+@media (max-width:767px){
+  .daily{flex-direction:column;align-items:stretch;padding:18px}
+  .daily-steps{flex-direction:column;gap:8px}
+}

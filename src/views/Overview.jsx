@@ -20,8 +20,16 @@ export default function Overview({ state, t, lang, ask, decide, busy, go }) {
 
   return (
     <>
-      <Head title={t.nav.overview} sub={<span className="n">{bidi(new Date().toLocaleDateString(lang === 'ar' ? 'ar-SA-u-ca-gregory-nu-latn' : 'en-GB', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }))}</span>} action={
-        <button className="btn btn-deep" disabled={busy} onClick={() => ask(t.daily)}><Icon name="spark" size={16} />{t.runDaily}</button>} />
+      <Head title={t.nav.overview} sub={<span className="n">{bidi(new Date().toLocaleDateString(lang === 'ar' ? 'ar-SA-u-ca-gregory-nu-latn' : 'en-GB', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }))}</span>} />
+
+      <section className="card daily">
+        <div className="daily-body">
+          <h2 className="sh">{t.dailyTitle}</h2>
+          <p className="muted">{t.dailyDesc}</p>
+          <ol className="daily-steps">{t.dailySteps.map((x, i) => <li key={x}><span className="n">{i + 1}</span>{x}</li>)}</ol>
+        </div>
+        <button className="btn btn-deep" disabled={busy} onClick={() => ask(t.daily)}><Icon name="spark" size={16} />{t.runDaily}</button>
+      </section>
 
       <div className="ov">
         <section className="card ov-hero">
