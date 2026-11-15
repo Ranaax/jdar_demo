@@ -36,7 +36,7 @@ export default function Overview({ state, t, lang, ask, decide, busy, go }) {
           <div className="ov-label">{t.kpi.overdue}</div>
           <div className="ov-big"><Money v={overdue.reduce((a, i) => a + total(i), 0)} lang={lang} /></div>
           <div className="ov-lines">
-            <div className="ov-line"><span>{t.kpi.occupancy}</span><span className="push"><N b>{pct}%</N> <span className="muted">· <N>{occ}</N> {t.of} <N>{state.units.length}</N> {t.units}</span></span></div>
+            <div className="ov-line"><span>{t.kpi.occupancy}<span className="ov-hint">{t.occHint}</span></span><span className="push"><N b>{pct}%</N> <span className="muted">· <N>{occ}</N> {t.of} <N>{state.units.length}</N> {t.units}</span></span></div>
             <div className="meter" role="img" aria-label={`${pct}%`}><span style={{ inlineSize: `${pct}%` }} /></div>
             <div className="ov-line"><span>{t.kpi.collected}</span><span className="push"><Money v={collected} lang={lang} /></span></div>
           </div>

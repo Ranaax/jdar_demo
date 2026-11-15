@@ -18,7 +18,6 @@ export default function Maintenance({ state, setState, t, lang, ask, decide }) {
           <AgentBtn onClick={() => ask(t.prompts.maintenance[0])}>{m.agentBtn}</AgentBtn>
         </div>} />
       {adding && <AddTicket {...{ state, m, lang }} onCancel={() => setAdding(false)} onSave={(unit_code, description) => { run('create_ticket', { unit_code, description }); setAdding(false) }} />}
-      <p className="note ui"><Icon name="spark" size={16} />{m.limitNote}</p>
       <PendingFor state={state} module="maintenance" t={t} lang={lang} decide={decide} />
 
       <div className="board">
@@ -71,6 +70,7 @@ export default function Maintenance({ state, setState, t, lang, ask, decide }) {
           </div>
         ))}
       </section>
+      <p className="footnote">{m.limitNote}</p>
     </>
   )
 }

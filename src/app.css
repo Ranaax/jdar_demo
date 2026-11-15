@@ -274,3 +274,14 @@ html[lang="ar"] .btn-sm{font-size:.9375rem}
   .daily{flex-direction:column;align-items:stretch;padding:18px}
   .daily-steps{flex-direction:column;gap:8px}
 }
+
+/* ---- v6: footnotes, occupancy hint, add-lead form ---- */
+.footnote{font-size:var(--fs-ui-xs);color:var(--ink-70);padding:4px 2px 0;border-top:1px solid var(--hair);padding-top:14px}
+.ov-hint{display:block;font-size:var(--fs-ui-xs);color:var(--ink-70)}
+.addform input{height:40px;padding:0 10px;border:0;border-radius:var(--r-btn);background:var(--surface);box-shadow:var(--sh-recess);font-size:.9375rem;color:var(--ink);min-width:0}
+.addform select{height:40px}
+.addform.lead{align-items:flex-end}
+.lead-head,.addform .wide{flex-basis:100%}
+.lead-head .sh{margin-bottom:2px}
+.addform.lead textarea{box-shadow:var(--sh-recess);background:var(--surface)}
+@media (max-width:767px){ .addform.lead label{flex-basis:100%} }

@@ -30,7 +30,6 @@ export default function Collections({ state, setState, t, lang, ask, decide }) {
         <span className="ui-xs">{c.aging}</span>
         {aging.map(([label, v]) => <span key={label} className="ui-row"><span className="ui-xs"><N>{label}</N> {c.days}</span><Money v={v} lang={lang} /></span>)}
       </section>
-      <p className="note ui">{c.vatNote}</p>
       <PendingFor state={state} module="collections" t={t} lang={lang} decide={decide} />
 
       <section className="card list">
@@ -69,6 +68,7 @@ export default function Collections({ state, setState, t, lang, ask, decide }) {
           </div>
         </section>
       </div>
+      <p className="footnote">{c.vatNote}</p>
     </>
   )
 }

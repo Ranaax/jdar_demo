@@ -161,7 +161,7 @@ async function leasing(prompt, lang, exec, getState) {
   const leads = exec('list_leads', { status: 'new' })
   await sleep(300)
   const out = []
-  let slot = 0
+  let slot = getState().leads.filter((x) => x.viewing).length
   for (const l of leads) {
     const matches = exec('match_units', { lead_id: l.id })
     await sleep(200)
@@ -169,7 +169,7 @@ async function leasing(prompt, lang, exec, getState) {
     const score = Math.min(95, 50 + (fit ? 25 : 0) + (fit?.within_budget ? 10 : 0) + (l.source === 'referral' ? 10 : l.source === 'website' ? 5 : 3))
     exec('qualify_lead', { lead_id: l.id, score, reason: fit ? 'match' : 'no match' })
     await sleep(200)
-    if (fit && !getState().leads.some((x) => x.unitId === fit.unit_id && x.status === 'viewing')) {
+    if (fit) {
       const when = `${d(1 + Math.floor(slot / 2))} ${slot % 2 ? '18:30' : '17:00'}`
       slot++
       exec('schedule_viewing', { lead_id: l.id, unit_id: fit.unit_id, datetime: when })
@@ -177,10 +177,10 @@ async function leasing(prompt, lang, exec, getState) {
     } else out.push(`${l.name} · ${score}/100 · ${lang === 'ar' ? 'لا توجد وحدة شاغرة مناسبة حالياً' : 'no suitable vacant unit yet'}`)
     await sleep(200)
   }
-  if (!out.length) return lang === 'ar' ? 'لا يوجد عملاء جدد.' : 'No new leads.'
+  if (!out.length) return lang === 'ar' ? 'جميع العملاء الحاليين مؤهَّلون، ولا يوجد عميل جديد.\nأضف عميلاً بشروطه من زر «إضافة عميل» في صفحة التأجير، وسأؤهّله وأحجز له معاينة.' : 'All current leads are already qualified; there is no new lead.\nAdd a lead with their requirements from “Add lead” on the Leasing page and I will qualify them and book a viewing.'
   return lang === 'ar'
-    ? `أهّلت ${leads.length} عملاء جدد وطابقتهم مع الوحدات الشاغرة (بآخر إيجار مسجّل في إيجار):\n${out.join('\n')}`
-    : `Qualified ${leads.length} new leads and matched them to vacant units (at the last registered Ejar rent):\n${out.join('\n')}`
+    ? `أهّلت العملاء الجدد (${leads.length}) وطابقتهم مع الوحدات الشاغرة (بآخر إيجار مسجّل في إيجار):\n${out.join('\n')}`
+    : `Qualified new leads (${leads.length}) and matched them to vacant units (at the last registered Ejar rent):\n${out.join('\n')}`
 }
 
 async function summary(lang, exec) {

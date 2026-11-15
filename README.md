@@ -11,14 +11,14 @@ npm run dev
 Without a key the agent runs a deterministic local mode, so the demo never depends on the network.
 
 ## How the agent works
-- `src/agent/schema.js` – 18 tool definitions and the system prompt (shared by browser and server).
+- `src/agent/schema.js` – 19 tool definitions and the system prompt (shared by browser and server).
 - `api/agent.js` – serverless function; calls the LLM with the tools. The key never reaches the browser.
 - `src/agent/runAgent.js` – agent loop: the model picks tools, the browser executes them against app state, results go back to the model until it finishes.
 - `src/agent/tools.js` – tool implementations, approval queue and guardrails (e.g. renewals above current rent are blocked under the Riyadh rent freeze).
 - `src/agent/fallback.js` – local agent and lease extractor used when no key is set.
 
 ## Guardrails (enforced in code, not only in the prompt)
-- **Allowlist:** the agent can only call the 18 tools; the server fixes the tool list and system prompt, and unknown tool names change nothing.
+- **Allowlist:** the agent can only call the 19 tools; the server fixes the tool list and system prompt, and unknown tool names change nothing.
 - **Human approval:** tenant messages, renewals, early terminations, new contracts and vendor quotes above 500 SAR go to the approval queue.
 - **Hard rules:** no rent increase on renewal (Riyadh rent freeze), vendor trade must match, payments cannot exceed the invoice total, IDs must exist.
 - **Limits:** 14 steps per run, 40 messages of history, 30 requests/minute per client, PDFs up to 3 MB.

@@ -8,6 +8,7 @@ export const T = {
     reset: 'إعادة ضبط العرض', resetConfirm: 'تأكيد إعادة الضبط', resetDone: 'أُعيدت البيانات التجريبية', close: 'إغلاق', none: 'لا يوجد شيء هنا', lang: 'English',
     approvals: 'بانتظار موافقتك', noApprovals: 'لا توجد طلبات معلّقة', approve: 'اعتماد', decline: 'رفض',
     activity: 'نشاط الوكيل', runDaily: 'تشغيل العمليات اليومية', dailyTitle: 'العمليات اليومية بضغطة واحدة', dailyDesc: 'يمرّ الوكيل على المحاور الأربعة ويجهّز العمل، ولا يُرسل شيئاً قبل اعتمادك.', dailySteps: ['يصوغ تذكيرات الفواتير المتأخرة', 'يقترح تجديد العقود القريبة من الانتهاء', 'يصنّف البلاغات ويسندها للمقاولين', 'يؤهّل العملاء الجدد ويحجز المعاينات'], suggestions: 'اقتراحات',
+    occHint: 'الوحدات المؤجَّرة من إجمالي الوحدات',
     kpi: { occupancy: 'نسبة الإشغال', collected: 'المحصّل خلال 30 يوماً', overdue: 'متأخرات', tickets: 'بلاغات مفتوحة', leads: 'عملاء جدد', expiring: 'عقود تنتهي خلال 90 يوماً' },
     units: 'وحدة', of: 'من',
     overview: { attention: 'يحتاج انتباهك اليوم', overdue: 'فواتير متأخرة', oldest: 'أقدمها منذ', expiring: 'عقود تنتهي خلال 90 يوماً', nearest: 'أقربها بعد', tickets: 'بلاغات صيانة جديدة', ticketsHint: 'لم تُصنّف ولم تُسند بعد', leads: 'عملاء جدد', vacant: 'وحدات شاغرة', noApprovals: 'لا توجد طلبات معلّقة. عند تشغيل الوكيل يظهر هنا كل ما يحتاج قرارك.' },
@@ -26,7 +27,8 @@ export const T = {
       status: { paid: 'مدفوعة', due: 'مستحقة', overdue: 'متأخرة' }, acct: { bank: 'البنك', receivables: 'ذمم المستأجرين', maintenance: 'مصروف الصيانة', income: 'إيرادات الإيجار', vat: 'ضريبة القيمة المضافة المستحقة' }, vat: 'ضريبة 15%', inclVat: 'شامل الضريبة', exempt: 'سكني · معفى', aging: 'أعمار المتأخرات', days: 'يوماً', vatNote: 'تُضاف ضريبة القيمة المضافة 15% إلى الإيجارات التجارية. الإيجار السكني معفى.', dr: 'مدين', cr: 'دائن' },
     maintenance: { title: 'الصيانة', sub: 'بلاغات المستأجرين وتوزيعها على المقاولين', cols: { new: 'جديدة', assigned: 'قيد التنفيذ', done: 'مكتملة' }, untriaged: 'لم تُصنّف بعد', vendors: 'المقاولون', open: 'أعمال مفتوحة', agentBtn: 'تصنيف البلاغات وإسنادها', add: 'إضافة بلاغ', unit: 'الوحدة', desc: 'وصف البلاغ كما ورد من المستأجر', save: 'حفظ البلاغ', cancel: 'إلغاء', sla: 'الاستجابة خلال', h: 'س', left: 'متبقٍ', breached: 'تجاوز المدة', met: 'ضمن المدة', quotes: 'عروض الأسعار', cost: 'التكلفة', eta: 'الوصول خلال', quotePending: 'عرض بانتظار الاعتماد', complete: 'تم الإنجاز', limitNote: 'العروض حتى 500 ر.س تُعتمد تلقائياً، وما زاد يحتاج موافقتك. عند الإنجاز تُقيّد التكلفة في الدفتر.' },
     leasing: { title: 'التأجير', sub: 'العملاء المحتملون والمعاينات والوحدات الشاغرة', cols: { new: 'جدد', qualified: 'مؤهَّلون', viewing: 'معاينة محجوزة' }, budget: 'الميزانية', vacant: 'الوحدات الشاغرة', lastEjar: 'آخر إيجار مسجّل', agentBtn: 'تأهيل العملاء وحجز المعاينات', beds: 'غرف', m2: 'م²', viewing: 'المعاينة',
-      type: { apartment: 'شقة', office: 'مكتب', shop: 'محل' }, source: { website: 'الموقع', whatsapp: 'واتساب', referral: 'إحالة' } },
+      type: { apartment: 'شقة', office: 'مكتب', shop: 'محل' }, source: { website: 'الموقع', whatsapp: 'واتساب', referral: 'إحالة', manual: 'إدخال يدوي' },
+      add: 'إضافة عميل', addTitle: 'عميل جديد وشروطه', name: 'اسم العميل', phone: 'رقم الجوال (اختياري)', wants: 'نوع الوحدة', bedsWanted: 'عدد الغرف', budgetYear: 'الميزانية السنوية (ر.س)', notes: 'شروط أخرى (الحي، موعد الانتقال، …)', saveRun: 'حفظ وتأهيل', saveOnly: 'حفظ فقط', cancel: 'إلغاء', addHint: 'يطابق الوكيل شروط العميل مع الوحدات الشاغرة، ويقيّمه، ويحجز له معاينة.' },
     sched: { monthly: 'شهري', quarterly: 'ربع سنوي', semiannual: 'نصف سنوي', annual: 'سنوي' },
     prompts: {
       overview: ['ما أهم ما يحتاج انتباهي اليوم؟', 'شغّل العمليات اليومية كاملة', 'ما إجمالي المتأخرات؟', 'ما الوحدات الشاغرة؟'],
@@ -37,7 +39,7 @@ export const T = {
     },
 
     daily: 'شغّل العمليات اليومية كاملة: المتأخرات، والتجديدات، والصيانة، والعملاء الجدد.',
-    tools: { get_portfolio_summary: 'قراءة ملخص المحفظة', list_invoices: 'قراءة الفواتير', draft_payment_reminder: 'صياغة تذكير', record_payment: 'تسجيل دفعة', list_contracts: 'قراءة العقود', propose_renewal: 'اقتراح تجديد', list_tickets: 'قراءة البلاغات', triage_ticket: 'تصنيف بلاغ', list_vendors: 'قراءة المقاولين', assign_vendor: 'إسناد مقاول', list_leads: 'قراءة العملاء', match_units: 'مطابقة الوحدات', qualify_lead: 'تأهيل عميل', schedule_viewing: 'حجز معاينة', create_ticket: 'تسجيل بلاغ', request_quotes: 'طلب عروض أسعار', complete_ticket: 'إغلاق بلاغ', propose_early_termination: 'اقتراح إنهاء مبكر' },
+    tools: { get_portfolio_summary: 'قراءة ملخص المحفظة', list_invoices: 'قراءة الفواتير', draft_payment_reminder: 'صياغة تذكير', record_payment: 'تسجيل دفعة', list_contracts: 'قراءة العقود', propose_renewal: 'اقتراح تجديد', list_tickets: 'قراءة البلاغات', triage_ticket: 'تصنيف بلاغ', list_vendors: 'قراءة المقاولين', assign_vendor: 'إسناد مقاول', list_leads: 'قراءة العملاء', match_units: 'مطابقة الوحدات', create_lead: 'إضافة عميل', qualify_lead: 'تأهيل عميل', schedule_viewing: 'حجز معاينة', create_ticket: 'تسجيل بلاغ', request_quotes: 'طلب عروض أسعار', complete_ticket: 'إغلاق بلاغ', propose_early_termination: 'اقتراح إنهاء مبكر' },
     empty: 'اطلب من الوكيل تنفيذ مهمة، أو اختر أحد الاقتراحات.',
     footer: 'بيانات تجريبية.',
   },
@@ -50,6 +52,7 @@ export const T = {
     reset: 'Reset demo', resetConfirm: 'Confirm reset', resetDone: 'Sample data restored', close: 'Close', none: 'Nothing here', lang: 'العربية',
     approvals: 'Awaiting your approval', noApprovals: 'Nothing pending', approve: 'Approve', decline: 'Decline',
     activity: 'Agent activity', runDaily: 'Run daily operations', dailyTitle: 'Daily operations in one click', dailyDesc: 'The agent goes through all four areas and prepares the work. Nothing is sent before you approve it.', dailySteps: ['Drafts reminders for overdue invoices', 'Proposes renewals for contracts ending soon', 'Triages tickets and assigns vendors', 'Qualifies new leads and books viewings'], suggestions: 'Suggestions',
+    occHint: 'Rented units out of all units',
     kpi: { occupancy: 'Occupancy', collected: 'Collected, last 30 days', overdue: 'Overdue', tickets: 'Open tickets', leads: 'New leads', expiring: 'Contracts ending in 90 days' },
     units: 'units', of: 'of',
     overview: { attention: 'Needs your attention today', overdue: 'Overdue invoices', oldest: 'oldest by', expiring: 'Contracts ending in 90 days', nearest: 'nearest in', tickets: 'New maintenance tickets', ticketsHint: 'Not triaged or assigned yet', leads: 'New leads', vacant: 'vacant units', noApprovals: 'Nothing pending. When the agent runs, everything that needs your decision appears here.' },
@@ -68,7 +71,8 @@ export const T = {
       status: { paid: 'Paid', due: 'Due', overdue: 'Overdue' }, acct: { bank: 'Bank', receivables: 'Tenant receivables', maintenance: 'Maintenance expense', income: 'Rental income', vat: 'VAT payable' }, vat: 'VAT 15%', inclVat: 'incl. VAT', exempt: 'Residential · exempt', aging: 'Overdue by age', days: 'days', vatNote: '15% VAT is added to commercial rent. Residential rent is exempt.', dr: 'Dr', cr: 'Cr' },
     maintenance: { title: 'Maintenance', sub: 'Tenant requests and vendor dispatch', cols: { new: 'New', assigned: 'In progress', done: 'Done' }, untriaged: 'Not triaged', vendors: 'Vendors', open: 'open jobs', agentBtn: 'Triage and dispatch', add: 'Add ticket', unit: 'Unit', desc: 'The request as the tenant reported it', save: 'Save ticket', cancel: 'Cancel', sla: 'Respond within', h: 'h', left: 'left', breached: 'Target missed', met: 'On target', quotes: 'Quotes', cost: 'Cost', eta: 'arrival in', quotePending: 'Quote awaiting approval', complete: 'Mark done', limitNote: 'Quotes up to 500 SAR are approved automatically; higher ones need your approval. Completing a ticket posts its cost to the ledger.' },
     leasing: { title: 'Leasing', sub: 'Leads, viewings and vacant units', cols: { new: 'New', qualified: 'Qualified', viewing: 'Viewing booked' }, budget: 'Budget', vacant: 'Vacant units', lastEjar: 'Last registered rent', agentBtn: 'Qualify leads and book viewings', beds: 'bed', m2: 'm²', viewing: 'Viewing',
-      type: { apartment: 'Apartment', office: 'Office', shop: 'Shop' }, source: { website: 'Website', whatsapp: 'WhatsApp', referral: 'Referral' } },
+      type: { apartment: 'Apartment', office: 'Office', shop: 'Shop' }, source: { website: 'Website', whatsapp: 'WhatsApp', referral: 'Referral', manual: 'Manual entry' },
+      add: 'Add lead', addTitle: 'New lead and requirements', name: 'Lead name', phone: 'Phone (optional)', wants: 'Unit type', bedsWanted: 'Bedrooms', budgetYear: 'Annual budget (SAR)', notes: 'Other requirements (district, move-in date, …)', saveRun: 'Save and qualify', saveOnly: 'Save only', cancel: 'Cancel', addHint: 'The agent matches the requirements to vacant units, scores the lead and books a viewing.' },
     sched: { monthly: 'Monthly', quarterly: 'Quarterly', semiannual: 'Semi-annual', annual: 'Annual' },
     prompts: {
       overview: ['What needs my attention today?', 'Run the full daily operations', 'What is the total overdue?', 'Which units are vacant?'],
@@ -79,7 +83,7 @@ export const T = {
     },
 
     daily: 'Run the full daily operations: overdue rent, renewals, maintenance and new leads.',
-    tools: { get_portfolio_summary: 'Reading portfolio summary', list_invoices: 'Reading invoices', draft_payment_reminder: 'Drafting reminder', record_payment: 'Recording payment', list_contracts: 'Reading contracts', propose_renewal: 'Proposing renewal', list_tickets: 'Reading tickets', triage_ticket: 'Triaging ticket', list_vendors: 'Reading vendors', assign_vendor: 'Assigning vendor', list_leads: 'Reading leads', match_units: 'Matching units', qualify_lead: 'Qualifying lead', schedule_viewing: 'Booking viewing', create_ticket: 'Logging ticket', request_quotes: 'Requesting quotes', complete_ticket: 'Closing ticket', propose_early_termination: 'Proposing early termination' },
+    tools: { get_portfolio_summary: 'Reading portfolio summary', list_invoices: 'Reading invoices', draft_payment_reminder: 'Drafting reminder', record_payment: 'Recording payment', list_contracts: 'Reading contracts', propose_renewal: 'Proposing renewal', list_tickets: 'Reading tickets', triage_ticket: 'Triaging ticket', list_vendors: 'Reading vendors', assign_vendor: 'Assigning vendor', list_leads: 'Reading leads', match_units: 'Matching units', create_lead: 'Adding lead', qualify_lead: 'Qualifying lead', schedule_viewing: 'Booking viewing', create_ticket: 'Logging ticket', request_quotes: 'Requesting quotes', complete_ticket: 'Closing ticket', propose_early_termination: 'Proposing early termination' },
     empty: 'Ask the agent to do something, or pick a suggestion.',
     footer: 'Sample data.',
   },

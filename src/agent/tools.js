@@ -196,6 +196,17 @@ const handlers = {
     return s.leads.filter((l) => !status || l.status === status).map((l) => ({ id: l.id, name: l.name[lang], type: l.need.type, bedrooms: l.need.beds, budget_sar: l.need.budget, note: l.need.note[lang], source: l.source, score: l.score, status: l.status, viewing: l.viewing }))
   },
 
+  create_lead(s, { name, phone = '', type, bedrooms = 0, budget, note = '' }) {
+    if (!name?.trim()) return { error: 'name is required' }
+    if (!['apartment', 'office', 'shop'].includes(type)) return { error: 'type must be apartment, office or shop' }
+    if (!(budget > 0)) return { error: 'budget must be a positive annual amount in SAR' }
+    const n = Math.max(...s.leads.map((l) => Number(l.id.slice(2)))) + 1
+    const l = { id: `L-${n}`, name: { ar: name.trim(), en: name.trim() }, phone, need: { type, beds: type === 'apartment' ? Math.max(0, Math.round(bedrooms)) : 0, budget: Math.round(budget), note: { ar: note, en: note } }, source: 'manual', created: today(), score: null, status: 'new', viewing: null, unitId: null }
+    s.leads.unshift(l)
+    log(s, 'leasing', { ar: `عميل جديد ${l.id}: ${l.name.ar}`, en: `New lead ${l.id}: ${l.name.en}` }, 'queue')
+    return { ok: true, lead_id: l.id }
+  },
+
   match_units(s, { lead_id }, lang) {
     const l = s.leads.find((x) => x.id === lead_id)
     if (!l) return { error: `lead ${lead_id} not found` }

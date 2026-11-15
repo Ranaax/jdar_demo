@@ -22,7 +22,6 @@ export default function Contracts({ state, setState, t, lang, ask, decide }) {
           <AgentBtn onClick={() => ask(t.prompts.contracts[0])}>{c.agentBtn}</AgentBtn>
         </div>} />
       {creating && <Creator {...{ state, setState, t, lang }} onDone={() => setCreating(false)} />}
-      <p className="note ui"><Icon name="spark" size={16} />{c.freeze}</p>
       <PendingFor state={state} module="contracts" t={t} lang={lang} decide={decide} />
 
       <section className="card list">
@@ -49,6 +48,7 @@ export default function Contracts({ state, setState, t, lang, ask, decide }) {
           )
         })}
       </section>
+      <p className="footnote">{c.freeze}</p>
     </>
   )
 }
