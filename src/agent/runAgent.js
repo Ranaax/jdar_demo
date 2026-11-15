@@ -36,11 +36,19 @@ export async function runAgent({ prompt, lang, history, getState, setState, onSt
     }
   } else if (!forceLocal) {
     const messages = [...history, { role: 'user', content: prompt }]
+    let waits = 0
     try {
       for (let i = 0; i < 24; i++) {
         const r = await post({ messages, lang, today: today() })
         if (r.status === 503 || r.status === 404) break
         const data = await r.json()
+        if (r.status === 429 && waits < 3) { // provider or demo rate limit: wait for the per-minute window, then carry on from the same step
+          waits++; i--
+          onText?.(lang === 'ar' ? 'بلغ النموذج حد الطلبات في الدقيقة. أنتظر قليلاً ثم أكمل من حيث توقفت…' : 'The model hit its per-minute request limit. Waiting a moment, then continuing where I stopped…')
+          await new Promise((ok) => setTimeout(ok, 22000)); onText?.('')
+          continue
+        }
+        if (r.status === 429) throw new Error(lang === 'ar' ? 'بلغ مفتاح النموذج حد الاستخدام المتاح له. ما نُفّذ حتى الآن محفوظ، ويمكن إكمال الباقي بعد قليل.' : 'The model key has reached its usage limit. What was done so far is saved; the rest can be completed shortly.')
         if (!r.ok) throw new Error(data.error)
         messages.push({ role: 'assistant', content: data.content })
         const calls = data.content.filter((b) => b.type === 'tool_use')

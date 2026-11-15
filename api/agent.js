@@ -61,7 +61,7 @@ let geminiModel
 async function gemini(body) {
   const base = env.GEMINI_BASE_URL || 'https://generativelanguage.googleapis.com'
   const started = Date.now(), tried = []
-  for (const model of geminiModel ? [geminiModel] : [...new Set(GEMINI_MODELS)]) {
+  for (const model of [...new Set([geminiModel, ...GEMINI_MODELS].filter(Boolean))]) { // last working model first; each model has its own quota
     for (let attempt = 0; attempt < 2 && Date.now() - started < 40000; attempt++) {
       let r, data = {}
       try {
@@ -77,7 +77,7 @@ async function gemini(body) {
       throw new Error(msg)
     }
   }
-  throw new Error(tried.join(' | '))
+  const e = new Error(tried.join(' | ')); e.quota = tried.some((x) => / 429 /.test(x)); throw e
 }
 
 const geminiTools = [{ functionDeclarations: TOOLS.map((t) => ({ name: t.name, description: t.description, ...(Object.keys(t.input_schema.properties || {}).length ? { parameters: t.input_schema } : {}) })) }]
@@ -139,6 +139,6 @@ export default async function handler(req, res) {
     const data = await anthropic({ system, tools: TOOLS, messages: clean })
     return send(res, 200, { content: data.content, stop_reason: data.stop_reason, model: data.model })
   } catch (e) {
-    return send(res, e.message === 'too_large' ? 413 : 502, { error: String(e.message || e) })
+    return send(res, e.message === 'too_large' ? 413 : e.quota ? 429 : 502, { error: e.quota ? 'quota' : String(e.message || e), detail: String(e.message || e).slice(0, 400) })
   }
 }
