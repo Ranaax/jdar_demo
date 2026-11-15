@@ -58,19 +58,24 @@ let geminiModel
 
 async function gemini(body) {
   const base = env.GEMINI_BASE_URL || 'https://generativelanguage.googleapis.com'
-  let last
+  const started = Date.now(), tried = []
   for (const model of geminiModel ? [geminiModel] : [...new Set(GEMINI_MODELS)]) {
-    for (let attempt = 0; attempt < 3; attempt++) {
-      const r = await fetch(`${base}/v1beta/models/${model}:generateContent`, { method: 'POST', headers: { 'content-type': 'application/json', 'x-goog-api-key': GEMINI_KEY }, body: JSON.stringify(body) })
-      const data = await r.json().catch(() => ({}))
+    for (let attempt = 0; attempt < 2 && Date.now() - started < 40000; attempt++) {
+      let r, data = {}
+      try {
+        r = await fetch(`${base}/v1beta/models/${model}:generateContent`, { method: 'POST', signal: AbortSignal.timeout(25000), headers: { 'content-type': 'application/json', 'x-goog-api-key': GEMINI_KEY }, body: JSON.stringify(body) })
+        data = await r.json().catch(() => ({}))
+      } catch (e) { tried.push(`${model}: ${e.name === 'TimeoutError' ? 'timed out' : e.message}`); break }
       if (r.ok) { geminiModel = model; return data }
-      last = new Error(data?.error?.message || `LLM error ${r.status}`)
-      if (r.status === 404) break                                   // model not available to this key: try the next one
-      if (r.status !== 429 && r.status !== 503) throw last
-      await new Promise((ok) => setTimeout(ok, 2500 * (attempt + 1))) // rate limited or overloaded: brief backoff
+      const msg = String(data?.error?.message || `HTTP ${r.status}`).slice(0, 220)
+      tried.push(`${model}: ${r.status} ${msg}`)
+      console.error('gemini', model, r.status, msg)
+      if (r.status === 503 && attempt === 0) { await new Promise((ok) => setTimeout(ok, 1500)); continue } // overloaded: one quick retry
+      if (r.status === 404 || r.status === 429 || r.status === 503) break                                  // not available or over quota for this key: next model
+      throw new Error(msg)
     }
   }
-  throw last
+  throw new Error(tried.join(' | '))
 }
 
 const geminiTools = [{ functionDeclarations: TOOLS.map((t) => ({ name: t.name, description: t.description, ...(Object.keys(t.input_schema.properties || {}).length ? { parameters: t.input_schema } : {}) })) }]
