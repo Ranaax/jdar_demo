@@ -5,11 +5,13 @@ export const config = { maxDuration: 60 }
 const env = process.env
 const LIMITS = { perMinute: 60, messages: 40, bodyBytes: 4_400_000, pdfBytes: 3_000_000 }
 
-// Provider is chosen by whichever key is configured. Gemini keys start with "AIza", Anthropic keys with "sk-ant".
-const findKey = (re) => Object.entries(env).find(([k, v]) => /KEY|TOKEN|GEMINI|GOOGLE|ANTHROPIC|CLAUDE/i.test(k) && re.test(v || ''))?.[1]
-const GEMINI_KEY = env.GEMINI_API_KEY || env.GOOGLE_API_KEY || env.GOOGLE_GENERATIVE_AI_API_KEY || findKey(/^AIza/)
-const ANTHROPIC_KEY = [env.ANTHROPIC_API_KEY, findKey(/^sk-ant/)].find((v) => v && !/^AIza/.test(v))
-const PROVIDER = env.AGENT_PROVIDER || (ANTHROPIC_KEY ? 'anthropic' : GEMINI_KEY ? 'gemini' : null)
+// Provider is chosen by whichever key is configured. The variable is found by name (anything containing
+// "gemini", or "anthropic"/"claude") or, failing that, by the key's shape, so the exact name does not matter.
+const vars = Object.entries(env).map(([k, v]) => [k, String(v || '').trim()]).filter(([, v]) => v.length > 20)
+const pick = (nameRe, valueRe) => (vars.find(([k]) => nameRe.test(k)) || vars.find(([k, v]) => /KEY|TOKEN|API/i.test(k) && valueRe.test(v)))?.[1]
+const GEMINI_KEY = pick(/gemini|google_(generative_ai_)?api|genai/i, /^AIza/)
+const ANTHROPIC_KEY = pick(/anthropic|claude/i, /^sk-ant/)
+const PROVIDER = env.AGENT_PROVIDER || (ANTHROPIC_KEY && !/^AIza/.test(ANTHROPIC_KEY) ? 'anthropic' : GEMINI_KEY ? 'gemini' : null)
 
 // Best-effort per-instance rate limit; use a shared store (e.g. Upstash) in production.
 const hits = new Map()
