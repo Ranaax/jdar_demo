@@ -53,7 +53,9 @@ async function anthropic(payload) {
 // ---------- Gemini ----------
 // The browser speaks one message format (text / tool_use / tool_result blocks); it is translated here.
 // Each block keeps its original Gemini part in `_p` so thought signatures go back exactly as received.
-const GEMINI_MODELS = [env.GEMINI_MODEL || env.AGENT_MODEL, 'gemini-3.8-flash', 'gemini-3.5-flash', 'gemini-2.5-flash'].filter(Boolean)
+// gemini-2.5-flash goes first: it answered reliably in testing, while the 3.x Flash models often returned 503 (high demand).
+// Set GEMINI_MODEL to choose another model.
+const GEMINI_MODELS = [env.GEMINI_MODEL || env.AGENT_MODEL, 'gemini-2.5-flash', 'gemini-3.5-flash', 'gemini-3.8-flash'].filter(Boolean)
 let geminiModel
 
 async function gemini(body) {
@@ -63,7 +65,7 @@ async function gemini(body) {
     for (let attempt = 0; attempt < 2 && Date.now() - started < 40000; attempt++) {
       let r, data = {}
       try {
-        r = await fetch(`${base}/v1beta/models/${model}:generateContent`, { method: 'POST', signal: AbortSignal.timeout(14000), headers: { 'content-type': 'application/json', 'x-goog-api-key': GEMINI_KEY }, body: JSON.stringify(body) })
+        r = await fetch(`${base}/v1beta/models/${model}:generateContent`, { method: 'POST', signal: AbortSignal.timeout(20000), headers: { 'content-type': 'application/json', 'x-goog-api-key': GEMINI_KEY }, body: JSON.stringify(body) })
         data = await r.json().catch(() => ({}))
       } catch (e) { tried.push(`${model}: ${e.name === 'TimeoutError' ? 'timed out' : e.message}`); break }
       if (r.ok) { geminiModel = model; return data }
